@@ -1,0 +1,142 @@
+/**
+ *
+ *   Copyright (c) 2014 Entropa Software Ltd.  All Rights Reserved.    
+ *
+ */
+
+	body {
+		padding: 1em;
+		padding-left: 3em;
+		font-family: Arial;
+	}
+
+	#content {
+		width: 555px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#instructions {
+		margin-bottom: 1em;
+		padding: 1em 2em;
+		/*
+		background: #dce6f5;
+		border-left-style: solid;
+		border-left-width: 7px;
+		border-left-color: #94b2d9;
+		*/
+		background: lightblue;
+		border-radius: 10px;
+		line-height: 1.6;
+		font-size: 10pt;
+	}
+
+	#footer {
+		margin-top: 3em;
+		padding-top: 0.3em;
+		font-size: 8pt;
+		color: #aaa;
+		width : 100%;
+		border-top: 1px solid #aaa;
+		text-align: center;
+	}
+
+	h1 {
+		font-size: 24pt;
+		font-weight: bold;
+		margin-top: 1.2em;
+		margin-bottom: 0.9em;
+		vertical-align: middle;
+	}
+
+	h1 div.img {
+		display: inline-block;
+		margin-top: auto;
+		margin-bottom: auto;
+		vertical-align: middle;
+	}
+
+	ul {
+		list-style-type: disc;
+		list-style-position: inside;
+	}
+
+	strong {
+		font-weight: bold;
+	}
+
+	table.patterns td {
+
+	}
+	table td {
+		vertical-align: top;
+	}
+
+	table td.buttons {
+		text-align: right;
+	}
+
+	table.colors {
+		width: 100%;
+	}
+
+	table.colors td.color {
+		width: 140px;
+		padding-bottom: 1em;
+	}
+
+	table.patterns {
+		width: 100%;
+	}
+
+	table.patterns td {
+		padding-bottom: 3px;
+	}
+
+	table.patterns td.patternType {
+		padding-left: 0.6em;
+		width: 100px;
+	}
+
+	table.patterns td.patternText input {
+		width: 100%;
+	}
+
+	input, select {
+		vertical-align: top;
+	}
+
+	button.saveButton {
+		margin-left: 1em;
+	}
+
+	div.color {
+		background-color: #dce6f5;
+		border-left: 7px solid #94b2d9;
+		height: 83px;
+		width: 133px;
+	}
+	tr.color-1 > td.color > div {
+		background-color: #dcf5ea;
+		border-color: #94d9bb;
+	}
+	tr.color-2 > td.color > div {
+		background-color: #f5f4dc;
+		border-color: #d9d694;
+	}
+	tr.color-3 > td.color > div {
+		background-color: #f5e8dc;
+		border-color: #d9b593;
+	}
+	tr.color-4 > td.color > div {
+		background-color: #f5dcdc;
+		border-color: #d99494;
+	}
+	tr.color-5 > td.color > div {
+		background-color: #f4dcee;
+		border-color: #d994c7;
+	}
+	tr.color-6 > td.color > div {
+		background-color: #e7dcf5;
+		border-color: #b194d9;
+	}
