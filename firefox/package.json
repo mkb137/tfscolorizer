@@ -1,0 +1,11 @@
+{
+    "name": "tfscolorizer",
+    "title": "TFS Colorizer",
+    "id": "jid1-GlX1M7B3Csdgrw",
+    "description": "This allows you to customize the colors of items on a TFS board depending on their content",
+    "author": "Entropa Software Ltd.",
+    "license": "MPL 2.0",
+    "version": "0.1",
+    "icon": "data/icon_48.png",
+    "icon64": "data/icon_64.png"
+}
