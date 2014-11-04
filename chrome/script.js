@@ -4,31 +4,20 @@
  *
  */
 
-	TfsColorizer = {	
-		/**
-		 * Our board colors, consisting of the pair of background and border colors.
-		 */
-		colors : [
-			{
-				"background": "#dcf5ea",
-				"border": "#94d9bb"
-			}, {
-				"background": "#f5f4dc",
-				"border": "#d9d694"
-			}, {
-				"background": "#f5e8dc",
-				"border": "#d9b593"
-			}, {
-				"background": "#f5dcdc",
-				"border": "#d99494"
-			}, {
-				"background": "#f4dcee",
-				"border": "#d994c7"
-			}, {
-				"background": "#e7dcf5",
-				"border": "#b194d9"
-			}
-		],
+function pad(a,b){return([1e15]+a).slice(-b)}
+
+function perceivedBrightness(rgb) {
+	var r = rgb >> 16;
+	var g = (rgb >> 8) % 256;
+	var b = rgb % 256;
+
+	return Math.floor(Math.sqrt(
+				r * r * .299 +
+				g * g * .587 +
+				b * b * .114));
+}
+
+	TfsColorizer = {
 		/**
 		 * The loaded settings.
 		 */
@@ -36,7 +25,7 @@
 		/**
 		 * Applies the given pattern to the board.
 		 */
-		applyPattern : function( $card, colors, patternType, patternText ) {
+		applyPattern : function( $card, backColor, borderColor, foreColor, patternType, patternText ) {
 			//console.log( "TfsColorizer.applyPattern - type = '" + patternType + "', text = '" + patternText + "', background = " + colors.background + ", border = " + colors.border );
 			try {
 				//console.log( " - card text = '" + $card.text() + "'" );
@@ -45,23 +34,23 @@
 					case "startswith":
 						//console.log( " - index of '" + patternText + "' = " + text.indexOf( patternText ) );
 						if ( text.indexOf( patternText ) == 0 ) {
-							TfsColorizer.applyStyle( $card, colors );
+							TfsColorizer.applyStyle( $card, backColor, borderColor, foreColor );
 						}
 						break;
 					case "endswith":
 						if ( text.indexOf( patternText ) == ( text.length - patternText.length ) ) {
-							TfsColorizer.applyStyle( $card, colors );
+							TfsColorizer.applyStyle( $card, backColor, borderColor, foreColor );
 						}
 						break;
 					case "contains":
 						if ( text.indexOf( patternText ) >= 0 ) {
-							TfsColorizer.applyStyle( $card, colors );
+							TfsColorizer.applyStyle( $card, backColor, borderColor, foreColor );
 						}
 						break;
 					case "regex":
 						var regex = new RegExp( patternText, "g" );
 						if ( regex.test( text ) ) {
-							TfsColorizer.applyStyle( $card, colors );
+							TfsColorizer.applyStyle( $card, backColor, borderColor, foreColor );
 						}
 						break;
 				}
@@ -101,14 +90,19 @@
 					var id = setting.id;
 					//console.log( " - checking setting id = " + id );
 					// Get the color object for this id
-					var colors = TfsColorizer.colors[parseInt( id ) - 1];
 					// For each pattern in the setting...
 					for ( var j = 0; j < setting.patterns.length; j++ ) {
 						var pattern = setting.patterns[j];
 						var patternType = pattern.patternType;
 						var patternText = pattern.patternText;
+
+						var color = 0;
+						if ( perceivedBrightness( setting.backColor ) <= 130 ) {
+							color = 0xffffff;
+						}
+
 						//console.log( " - applying pattern type = '" + patternType + "', text = '" + patternText + "'" );
-						TfsColorizer.applyPattern( $card, colors, patternType, patternText );
+						TfsColorizer.applyPattern( $card, setting.backColor, setting.borderColor, color, patternType, patternText );
 					}
 				}
 				// Apply the user name setting
@@ -120,13 +114,18 @@
 		/**
 		 * Applies the style to the card.
 		 */
-		applyStyle : function( $card, colors ) {
+		applyStyle : function( $card, backColor, borderColor, foreColor ) {
 			//console.log( "TfsColorizer.applyStyle" );
 			try {
 				$card.parent().css( {
-					"background-color": colors.background,
-					"border-left-color": colors.border
+					"background-color": "#" + pad(backColor.toString(16), 6),
+					"border-left-color": "#" + pad(borderColor.toString(16), 6)
 				} );
+
+				if (foreColor) {
+					$card.parent().find('.witTitle, .witRemainingWork, .witAssignedTo')
+						.css({ "color": "#" + pad(foreColor.toString(16), 6) });
+				}
 			} catch( e ) {
 				//console.log( "Error: " + e );
 			}
