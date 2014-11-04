@@ -13,108 +13,6 @@
 
 	TfsOptions = {		
 		/** 
-		 * Generates the options table.
-		 */
-		generateOptionsTable : function() {
-			//console.log( "TfsOptions.generateOptionsTable" );
-			try {
-				// Get the container
-				var $container = $( "#options-container" );
-				// Clear the container just in case
-				$container.empty();
-				// Set some constants
-				var colorCount = 6;
-				var patternsPerColor = 3;
-				// Create a table
-				var $table = $( "<table>" )
-					.addClass( "colors" )
-					.appendTo( $container );
-				var $tbody = $( "<tbody>" )
-					.appendTo( $table );
-				// For each color...
-				for ( var i = 1; i <= colorCount; i++ ) {
-					// Create a row
-					var $colorRow = $( "<tr>" )
-						.addClass( "color" )
-						.addClass( "color-" + i )
-						.appendTo( $tbody );
-					// Add our color cell
-					var $colorCell = $( "<td>" )
-						.addClass( "color" )
-						.appendTo( $colorRow );
-					var $colorDiv = $( "<div>" )
-						.addClass( "color" )
-						.appendTo( $colorCell );
-					// Add a cell containing a table of options
-					var $patternsCell = $( "<td>" )
-						.addClass( "patterns" )
-						.appendTo( $colorRow );
-					var $patternsTable = $( "<table>" )
-						.addClass( "patterns" )
-						.appendTo( $patternsCell );
-					var $patternsBody = $( "<tbody>" )
-						.appendTo( $patternsTable );
-					// For each pattern...
-					for ( var j = 0; j < patternsPerColor; j++ ) {
-						// Add a pattern row
-						var $patternRow = $( "<tr>" )
-							.addClass( "pattern" )
-							.appendTo( $patternsBody );
-						// Add the pattern types
-						var $patternTypeCell = $( "<td>" )
-							.addClass( "patternType" )
-							.appendTo( $patternRow );
-						var $select = $( "<select>" )
-							.addClass( "patternType" )
-							.appendTo( $patternTypeCell );
-						$( "<option>" ).attr( "value", "startswith" ).text( "Starts With"	).appendTo( $select );
-						$( "<option>" ).attr( "value", "endswith"	).text( "Ends With"		).appendTo( $select );
-						$( "<option>" ).attr( "value", "contains"	).text( "Contains"		).appendTo( $select );
-						$( "<option>" ).attr( "value", "regex"		).text( "RegEx"			).appendTo( $select );
-						// Add the pattern text
-						var $patternTextCell = $( "<td>" )
-							.addClass( "patternText" )
-							.appendTo( $patternRow );
-						var $input = $( "<input>" )
-							.addClass( "patternText" )
-							.attr( "type", "text" )
-							.attr( "maxlength", "50" )
-							.appendTo( $patternTextCell );
-					}					
-				}
-				// Add our row of buttons
-				var $tfoot = $( "<tfoot>" )
-					.appendTo( $table );
-				var $buttonRow = $( "<tr>" )
-					.addClass( "buttons" )
-					.appendTo( $tfoot );
-				var $buttonCell = $( "<td>" )
-					.addClass( "buttons" )
-					.attr( "colspan", "2" )
-					.appendTo( $buttonRow );
-				var $resetButton = $( "<button>" )
-					.addClass( "resetButton" )
-					.text( "Reset" )
-					.click( TfsOptions.onResetButtonClicked )
-					.appendTo( $buttonCell );
-				var $reloadButton = $( "<button>" )
-					.addClass( "reloadButton" )
-					.text( "Reload" )
-					.click( TfsOptions.onReloadButtonClicked )
-					.appendTo( $buttonCell );
-				var $saveButton = $( "<button>" )
-					.addClass( "saveButton" )
-					.text( "Save" )
-					.click( TfsOptions.onSaveButtonClicked )
-					.appendTo( $buttonCell );
-				// Return the table
-				return $table;
-			} catch( e ) {
-				//console.log( "Error: " + e );
-			}
-			return null;
-		},
-		/** 
 		 * Gets the settings object from the UI
 		 */
 		getSettings : function() {
@@ -125,13 +23,19 @@
 				// For each color row...
 				$( "tr.color" ).each( function( index ) {
 					//console.log( " - checking row " + index );
-					// Set the row ID
-					var id = index + 1;
 					// Create an array for our patterns
 					var patterns = new Array();
+
+					var backColor = $( this ).find("div.color").first()
+						.css('backgroundColor');
+
+					var hexString = Util.parseRgbColor(backColor);
+					var borderColor = Util.colorLuminance(hexString, -0.3);
+					
 					// Create a setting object
-					var setting = { "id": id, "patterns" : patterns };
+					var setting = { "backColor": hexString, "borderColor": borderColor, "patterns" : patterns };
 					settings.push( setting );
+					
 					// For each pattern row...
 					$( this ).find( "tr.pattern" ).each( function( patternIndex ) {
 						//console.log( " - checking pattern " + patternIndex );
@@ -154,15 +58,101 @@
 			}
 			return null;
 		},
+		createRow: function( $tbody, setting ) {
+			// Default new row color
+			var backColor = "#e7dcf5";
+			var borderColor = "#a29aac";
+
+			if (setting) {
+				backColor = setting.backColor;
+				borderColor = setting.borderColor;
+			}
+
+			// Create a row
+			var $colorRow = $( "<tr>" )
+				.addClass( "color" )
+				.appendTo( $tbody );
+
+			// Add our color cell
+			var $colorCell = $( "<td>" )
+				.addClass( "color" )
+				.appendTo( $colorRow );
+			var $colorDiv = $( "<div>" )
+				.addClass( "color" )
+				.css({ "background-color": backColor, "border-color": borderColor })
+				.ColorPicker({
+					onShow: function(cp) {
+						$(cp).fadeIn(500);
+						return false;
+					},
+					onHide: function(cp) {
+						$(cp).fadeOut(500);
+						return false;
+					},
+					onChange: function (hsb, hex, rgb) {
+						$(this.data('colorpicker').el).css({ 'backgroundColor': '#' + hex, 'borderLeftColor': Util.colorLuminance(hex, -0.3) });
+					},
+					onBeforeShow: function () {
+						var bg = Util.parseRgbColor( this.style.backgroundColor );
+						$(this).ColorPickerSetColor( bg );
+					}
+				})
+				.appendTo( $colorCell )
+
+			// Add a cell containing a table of options
+			var $patternsCell = $( "<td>" )
+				.addClass( "patterns" )
+				.appendTo( $colorRow );
+			var $patternsTable = $( "<table>" )
+				.addClass( "patterns" )
+				.appendTo( $patternsCell );
+			var $patternsBody = $( "<tbody>" )
+				.appendTo( $patternsTable );
+
+			// For each pattern...
+			for ( var j = 0; j < 3; j++ ) {
+				// Add a pattern row
+				var $patternRow = $( "<tr>" )
+					.addClass( "pattern" )
+					.appendTo( $patternsBody );
+
+				// Add the pattern types
+				var $patternTypeCell = $( "<td>" )
+					.addClass( "patternType" )
+					.appendTo( $patternRow );
+				var $select = $( "<select>" )
+					.addClass( "patternType" )
+					.appendTo( $patternTypeCell );
+
+				$( "<option>" ).attr( "value", "startswith" ).text( "Starts With" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "endswith" ).text( "Ends With" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "contains" ).text( "Contains" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "regex" ).text( "RegEx" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "user" ).text( "Assigned User" ).appendTo( $select);
+
+				// Add the pattern text
+				var $patternTextCell = $( "<td>" )
+					.addClass( "patternText" )
+					.appendTo( $patternRow );
+				var $input = $( "<input>" )
+					.addClass( "patternText" )
+					.attr( "type", "text" )
+					.attr( "maxlength", "50" )
+					.appendTo( $patternTextCell );
+
+				if (setting && setting.patterns.length > j) {
+					var pattern = setting.patterns[j];
+					$select.val( pattern.patternType );
+					$input.val( pattern.patternText );
+				}
+			}
+		},
 		/** 
 		 * Initializes the UI.
 		 */
 		initialize : function() {
 			//console.log( "TfsOptions.initialize" );
 			try {
-				// Generate the options table
-				var $table = TfsOptions.generateOptionsTable();
-				if ( $table == null ) return;
 				// Load the settings
 //				var settings = TfsOptions.loadSettings();
 				chrome.storage.sync.get( "settings", function( items ) {
@@ -174,10 +164,16 @@
 						settings = TfsDefaults.defaultSettings;
 					}
 					// Populate the table with the settings
-					TfsOptions.populateTable( $table, settings );
+					TfsOptions.populateTable( settings );
 				} );
 			} catch( e ) {
 				//console.log( "Error: " + e );
+			}
+		},
+		onAddButtonClicked : function() {
+			try {
+				TfsOptions.createRow( $( "table.colors > tbody" ) );
+			} catch( e ) {
 			}
 		},
 		/** 
@@ -232,40 +228,62 @@
 		},
 		/** 
 		 * Populates the table from the settings.
-		 * $table - the table
 		 * settings - the settings object.
 		 */
-		populateTable : function( $table, settings ) {
+		populateTable : function( settings ) {
 			//console.log( "TfsOptions.populateTable" );
 			try {
 				// For each setting...
+				var $container = $( '#options-container' );
+				var patternsPerColor = 3;
+
+				$container.empty();
+
+				// Create a table
+				var $table = $( "<table>" )
+					.addClass( "colors" )
+					.appendTo( $container );
+				var $tbody = $( "<tbody>" )
+					.appendTo( $table );
+
 				for ( var i = 0; i < settings.length; i++ ) {
-					var setting = settings[i];
-					// Get the setting ID
-					var id = setting.id;
-					//console.log( " - id = " + id + ", type " + typeof ( id ) );
-					// Get the row matching the id
-					var $colorRow = $table.find( "tr.color-" + id );
-					if ( $colorRow.length == 0 ) {
-						//console.log( "WARNING - could not find row for color " + id );
-					} else {
-						//console.log( " - got row" );
-						//console.log( " setting has " + setting.patterns.length + " patterns" );
-						// Get the patterns table
-						var $patternsTable = $colorRow.find( "table.patterns" );
-						// For each pattern...
-						for ( var j = 0; j < setting.patterns.length; j++ ) {
-							var pattern = setting.patterns[j];
-							// Get the row
-							var $patternRow = $patternsTable.find( "tbody > tr:eq(" + j + ")");
-							//console.log( " - got pattern type = " + pattern.patternType + ", text = " + pattern.patternText );
-							// set the select value
-							$patternRow.find( "select" ).val( pattern.patternType );
-							$patternRow.find( "input"  ).val( pattern.patternText );
-						}
-					}
+					TfsOptions.createRow( $tbody, settings[i] );
 				}
 
+				// Add our row of buttons
+				var $tfoot = $( "<tfoot>" )
+					.appendTo( $table );
+				var $buttonRow = $( "<tr>" )
+					.addClass( "buttons" )
+					.appendTo( $tfoot );
+
+				var $buttonCell1 = $( "<td>" )
+					.addClass( "buttons" )
+					.appendTo( $buttonRow );
+				var $addButton = $( "<button>" )
+					.addClass( "addButton" )
+					.text( "Add" )
+					.click( TfsOptions.onAddButtonClicked )
+					.appendTo( $buttonCell1 );
+
+				var $buttonCell = $( "<td>" )
+					.addClass( "buttons" )
+					.appendTo( $buttonRow );
+				var $resetButton = $( "<button>" )
+					.addClass( "resetButton" )
+					.text( "Reset" )
+					.click( TfsOptions.onResetButtonClicked )
+					.appendTo( $buttonCell );
+				var $reloadButton = $( "<button>" )
+					.addClass( "reloadButton" )
+					.text( "Reload" )
+					.click( TfsOptions.onReloadButtonClicked )
+					.appendTo( $buttonCell );
+				var $saveButton = $( "<button>" )
+					.addClass( "saveButton" )
+					.text( "Save" )
+					.click( TfsOptions.onSaveButtonClicked )
+					.appendTo( $buttonCell );
 			} catch( e ) {
 				//console.log( "Error: " + e );
 			}

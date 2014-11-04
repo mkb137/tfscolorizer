@@ -116,27 +116,3 @@
 		height: 83px;
 		width: 133px;
 	}
-	tr.color-1 > td.color > div {
-		background-color: #dcf5ea;
-		border-color: #94d9bb;
-	}
-	tr.color-2 > td.color > div {
-		background-color: #f5f4dc;
-		border-color: #d9d694;
-	}
-	tr.color-3 > td.color > div {
-		background-color: #f5e8dc;
-		border-color: #d9b593;
-	}
-	tr.color-4 > td.color > div {
-		background-color: #f5dcdc;
-		border-color: #d99494;
-	}
-	tr.color-5 > td.color > div {
-		background-color: #f4dcee;
-		border-color: #d994c7;
-	}
-	tr.color-6 > td.color > div {
-		background-color: #e7dcf5;
-		border-color: #b194d9;
-	}
