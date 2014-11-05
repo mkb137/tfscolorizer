@@ -4,19 +4,6 @@
  *
  */
 
-function pad(a,b){return([1e15]+a).slice(-b)}
-
-function perceivedBrightness(rgb) {
-	var r = rgb >> 16;
-	var g = (rgb >> 8) % 256;
-	var b = rgb % 256;
-
-	return Math.floor(Math.sqrt(
-				r * r * .299 +
-				g * g * .587 +
-				b * b * .114));
-}
-
 	TfsColorizer = {
 		/**
 		 * The loaded settings.
@@ -87,8 +74,7 @@ function perceivedBrightness(rgb) {
 				// For each setting...
 				for ( var i = 0; i < settings.length; i++ ) {
 					var setting = settings[i];
-					var id = setting.id;
-					//console.log( " - checking setting id = " + id );
+
 					// Get the color object for this id
 					// For each pattern in the setting...
 					for ( var j = 0; j < setting.patterns.length; j++ ) {
@@ -96,9 +82,9 @@ function perceivedBrightness(rgb) {
 						var patternType = pattern.patternType;
 						var patternText = pattern.patternText;
 
-						var color = 0;
-						if ( perceivedBrightness( setting.backColor ) <= 130 ) {
-							color = 0xffffff;
+						var color = "";
+						if ( Util.perceivedBrightness( setting.backColor ) <= 130 ) {
+							color = "#ffffff";
 						}
 
 						//console.log( " - applying pattern type = '" + patternType + "', text = '" + patternText + "'" );
@@ -118,13 +104,13 @@ function perceivedBrightness(rgb) {
 			//console.log( "TfsColorizer.applyStyle" );
 			try {
 				$card.parent().css( {
-					"background-color": "#" + pad(backColor.toString(16), 6),
-					"border-left-color": "#" + pad(borderColor.toString(16), 6)
+					"background-color": backColor,
+					"border-left-color": borderColor
 				} );
 
 				if (foreColor) {
 					$card.parent().find('.witTitle, .witRemainingWork, .witAssignedTo')
-						.css({ "color": "#" + pad(foreColor.toString(16), 6) });
+						.css({ "color": foreColor });
 				}
 			} catch( e ) {
 				//console.log( "Error: " + e );

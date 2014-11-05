@@ -3,8 +3,6 @@
  *   Copyright (c) 2014 Entropa Software Ltd.  All Rights Reserved.    
  *
  */
-
-
 	TfsDefaults = {		
 		/**
 		 * These are the default settings, used if we have none in storage.
@@ -13,8 +11,7 @@
 		defaultSettings : [
 			// We have one object for each color
 			{ 
-				id : 1,
-				backColor: 0xdcf5ea,
+				backColor: "#dcf5ea",
 				borderColor: 0x9aaca4,
 				patterns : [
 					{ patternType : "regex", patternText : "DEV" },
@@ -22,44 +19,38 @@
 				]
 			},
 			{ 
-				id : 2,
-				backColor: 0xf5f4dc,
-				borderColor: 0xacab9a,
+				backColor: "#f5f4dc",
+				borderColor: "#acab9a",
 				patterns : [
 					{ patternType : "startswith", patternText : "Documentation" }
 				]
 			},
 			{ 
-				id : 3,
-				backColor: 0xf5e8dc,
-				borderColor: 0xaca29a,
+				backColor: "#f5e8dc",
+				borderColor: "#aca29a",
 				patterns : [
 					{ patternType : "startswith", patternText : "Test" },
 					{ patternType : "startswith", patternText : "Confirm" }
 				]
 			},
 			{ 
-				id : 4,
-				backColor: 0xf5dcdc,
-				borderColor: 0xac9a9a,
+				backColor: "#f5dcdc",
+				borderColor: "#ac9a9a",
 				patterns : [
 					{ patternType : "contains", patternText : "Blocked" }
 				]
 			},
 			{ 
-				id : 5,
-				backColor: 0xf4dcee,
-				borderColor: 0xab9aa7,
+				backColor: "#f4dcee",
+				borderColor: "#ab9aa7",
 				patterns : [
 					{ patternType : "contains", patternText : "Analysis" }
 				]
 			},
 			{ 
-				id : 6,
-				backColor: 0xe7dcf5,
-				borderColor: 0xa29aac,
-				patterns : [
-				]
+				backColor: "#e7dcf5",
+				borderColor: "#a29aac",
+				patterns : []
 			}				
 		]
 	};

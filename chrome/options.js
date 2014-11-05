@@ -4,127 +4,6 @@
  *
  */
 
-function ColorLuminance(hex, lum) {
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-	}
-	lum = lum || 0;
-
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-		c = parseInt(hex.substr(i*2,2), 16);
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
-	}
-
-	return rgb;
-}
-
-function pad(a,b){return([1e15]+a).slice(-b)}
-
-function parseRgbColor(rgb) {
-	var parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-
-	delete (parts[0]);
-	for (var i = 1; i <= 3; ++i) {
-	    parts[i] = parseInt(parts[i]).toString(16);
-	    if (parts[i].length == 1) parts[i] = '0' + parts[i];
-	}
-
-	return parts.join('').toLowerCase();
-}
-
-function createRow( $tbody, setting ) {
-	var backColor = "#e7dcf5";
-	var borderColor = "#a29aac";
-
-	if (setting) {
-		backColor = "#" + pad(setting.backColor.toString(16), 6);
-		borderColor = "#" + pad(setting.borderColor.toString(16), 6);
-	}
-
-	// Create a row
-	var $colorRow = $( "<tr>" )
-		.addClass( "color" )
-		.appendTo( $tbody );
-
-	// Add our color cell
-	var $colorCell = $( "<td>" )
-		.addClass( "color" )
-		.appendTo( $colorRow );
-	var $colorDiv = $( "<div>" )
-		.addClass( "color" )
-		.css({ "background-color": backColor, "border-color": borderColor })
-		.ColorPicker({
-			onShow: function(cp) {
-				$(cp).fadeIn(500);
-				return false;
-			},
-			onHide: function(cp) {
-				$(cp).fadeOut(500);
-				return false;
-			},
-			onChange: function (hsb, hex, rgb) {
-				$(this.data('colorpicker').el).css({ 'backgroundColor': '#' + hex, 'borderLeftColor': '#' + pad(ColorLuminance(hex, -0.3), 6) });
-			},
-			onBeforeShow: function () {
-				var bg = parseRgbColor( this.style.backgroundColor );
-				$(this).ColorPickerSetColor( bg );
-			}
-		})
-		.appendTo( $colorCell )
-
-	// Add a cell containing a table of options
-	var $patternsCell = $( "<td>" )
-		.addClass( "patterns" )
-		.appendTo( $colorRow );
-	var $patternsTable = $( "<table>" )
-		.addClass( "patterns" )
-		.appendTo( $patternsCell );
-	var $patternsBody = $( "<tbody>" )
-		.appendTo( $patternsTable );
-
-	// For each pattern...
-	for ( var j = 0; j < 3; j++ ) {
-		// Add a pattern row
-		var $patternRow = $( "<tr>" )
-			.addClass( "pattern" )
-			.appendTo( $patternsBody );
-
-		// Add the pattern types
-		var $patternTypeCell = $( "<td>" )
-			.addClass( "patternType" )
-			.appendTo( $patternRow );
-		var $select = $( "<select>" )
-			.addClass( "patternType" )
-			.appendTo( $patternTypeCell );
-
-		$( "<option>" ).attr( "value", "startswith" ).text( "Starts With"	).appendTo( $select );
-		$( "<option>" ).attr( "value", "endswith"	).text( "Ends With"		).appendTo( $select );
-		$( "<option>" ).attr( "value", "contains"	).text( "Contains"		).appendTo( $select );
-		$( "<option>" ).attr( "value", "regex"		).text( "RegEx"			).appendTo( $select );
-
-		// Add the pattern text
-		var $patternTextCell = $( "<td>" )
-			.addClass( "patternText" )
-			.appendTo( $patternRow );
-		var $input = $( "<input>" )
-			.addClass( "patternText" )
-			.attr( "type", "text" )
-			.attr( "maxlength", "50" )
-			.appendTo( $patternTextCell );
-
-		if (setting && setting.patterns.length > j) {
-			var pattern = setting.patterns[j];
-			$select.val( pattern.patternType );
-			$input.val( pattern.patternText );
-		}
-	}
-}
-
 	// The entry point
 	$( document ).ready(function() {
 		//console.log( "document.ready" );
@@ -144,20 +23,17 @@ function createRow( $tbody, setting ) {
 				// For each color row...
 				$( "tr.color" ).each( function( index ) {
 					//console.log( " - checking row " + index );
-					// Set the row ID
-					var id = index + 1;
-
 					// Create an array for our patterns
 					var patterns = new Array();
 
 					var backColor = $( this ).find("div.color").first()
 						.css('backgroundColor');
 
-					var hexString = parseRgbColor(backColor);
-					var borderColor = ColorLuminance(hexString, -0.3);
+					var hexString = Util.parseRgbColor(backColor);
+					var borderColor = Util.colorLuminance(hexString, -0.3);
 					
 					// Create a setting object
-					var setting = { "id": id, "backColor": parseInt(hexString.toUpperCase(), 16), "borderColor": parseInt(borderColor.substr(1).toUpperCase(), 16), "patterns" : patterns };
+					var setting = { "backColor": hexString, "borderColor": borderColor, "patterns" : patterns };
 					settings.push( setting );
 					
 					// For each pattern row...
@@ -181,6 +57,94 @@ function createRow( $tbody, setting ) {
 				//console.log( "Error: " + e );
 			}
 			return null;
+		},
+		createRow = function( $tbody, setting ) {
+			// Default new row color
+			var backColor = "#e7dcf5";
+			var borderColor = "#a29aac";
+
+			if (setting) {
+				backColor = setting.backColor;
+				borderColor = setting.borderColor;
+			}
+
+			// Create a row
+			var $colorRow = $( "<tr>" )
+				.addClass( "color" )
+				.appendTo( $tbody );
+
+			// Add our color cell
+			var $colorCell = $( "<td>" )
+				.addClass( "color" )
+				.appendTo( $colorRow );
+			var $colorDiv = $( "<div>" )
+				.addClass( "color" )
+				.css({ "background-color": backColor, "border-color": borderColor })
+				.ColorPicker({
+					onShow: function(cp) {
+						$(cp).fadeIn(500);
+						return false;
+					},
+					onHide: function(cp) {
+						$(cp).fadeOut(500);
+						return false;
+					},
+					onChange: function (hsb, hex, rgb) {
+						$(this.data('colorpicker').el).css({ 'backgroundColor': '#' + hex, 'borderLeftColor': Util.colorLuminance(hex, -0.3) });
+					},
+					onBeforeShow: function () {
+						var bg = Util.parseRgbColor( this.style.backgroundColor );
+						$(this).ColorPickerSetColor( bg );
+					}
+				})
+				.appendTo( $colorCell )
+
+			// Add a cell containing a table of options
+			var $patternsCell = $( "<td>" )
+				.addClass( "patterns" )
+				.appendTo( $colorRow );
+			var $patternsTable = $( "<table>" )
+				.addClass( "patterns" )
+				.appendTo( $patternsCell );
+			var $patternsBody = $( "<tbody>" )
+				.appendTo( $patternsTable );
+
+			// For each pattern...
+			for ( var j = 0; j < 3; j++ ) {
+				// Add a pattern row
+				var $patternRow = $( "<tr>" )
+					.addClass( "pattern" )
+					.appendTo( $patternsBody );
+
+				// Add the pattern types
+				var $patternTypeCell = $( "<td>" )
+					.addClass( "patternType" )
+					.appendTo( $patternRow );
+				var $select = $( "<select>" )
+					.addClass( "patternType" )
+					.appendTo( $patternTypeCell );
+
+				$( "<option>" ).attr( "value", "startswith" ).text( "Starts With" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "endswith" ).text( "Ends With" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "contains" ).text( "Contains" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "regex" ).text( "RegEx" ).appendTo( $select );
+
+				// Add the pattern text
+				var $patternTextCell = $( "<td>" )
+					.addClass( "patternText" )
+					.appendTo( $patternRow );
+				var $input = $( "<input>" )
+					.addClass( "patternText" )
+					.attr( "type", "text" )
+					.attr( "maxlength", "50" )
+					.appendTo( $patternTextCell );
+
+				if (setting && setting.patterns.length > j) {
+					var pattern = setting.patterns[j];
+					$select.val( pattern.patternType );
+					$input.val( pattern.patternText );
+				}
+			}
 		},
 		/** 
 		 * Initializes the UI.
@@ -207,7 +171,7 @@ function createRow( $tbody, setting ) {
 		},
 		onAddButtonClicked : function() {
 			try {
-				createRow( $( "table.colors > tbody" ) );
+				TfsOptions.createRow( $( "table.colors > tbody" ) );
 			} catch( e ) {
 			}
 		},
@@ -282,7 +246,7 @@ function createRow( $tbody, setting ) {
 					.appendTo( $table );
 
 				for ( var i = 0; i < settings.length; i++ ) {
-					createRow( $tbody, settings[i] );
+					TfsOptions.createRow( $tbody, settings[i] );
 				}
 
 				// Add our row of buttons
