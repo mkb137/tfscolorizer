@@ -128,6 +128,7 @@
 				$( "<option>" ).attr( "value", "endswith" ).text( "Ends With" ).appendTo( $select );
 				$( "<option>" ).attr( "value", "contains" ).text( "Contains" ).appendTo( $select );
 				$( "<option>" ).attr( "value", "regex" ).text( "RegEx" ).appendTo( $select );
+				$( "<option>" ).attr( "value", "user" ).text( "Assigned User" ).appendTo( $select);
 
 				// Add the pattern text
 				var $patternTextCell = $( "<td>" )

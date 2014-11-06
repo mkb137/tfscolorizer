@@ -40,6 +40,12 @@
 							TfsColorizer.applyStyle( $card, backColor, borderColor, foreColor );
 						}
 						break;
+					case "user":
+						var userText = $card.parent().find("div.witAssignedTo").text();
+						if (userText.toLowerCase() === patternText.toLowerCase()) {
+							TfsColorizer.applyStyle( $card, backColor, borderColor, foreColor );
+						}
+						break;
 				}
 			} catch( e ) {
 				//console.log( "Error: " + e );
@@ -91,6 +97,7 @@
 						TfsColorizer.applyPattern( $card, setting.backColor, setting.borderColor, color, patternType, patternText );
 					}
 				}
+
 				// Apply the user name setting
 				TfsColorizer.applyUserName( $card, userName );
 			} catch( e ) {
@@ -109,7 +116,7 @@
 				} );
 
 				if (foreColor) {
-					$card.parent().find('.witTitle, .witRemainingWork, .witAssignedTo')
+					$card.parent().find(".witTitle, .witRemainingWork, .witAssignedTo")
 						.css({ "color": foreColor });
 				}
 			} catch( e ) {
