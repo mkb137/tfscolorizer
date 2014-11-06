@@ -58,7 +58,7 @@
 			}
 			return null;
 		},
-		createRow = function( $tbody, setting ) {
+		createRow: function( $tbody, setting ) {
 			// Default new row color
 			var backColor = "#e7dcf5";
 			var borderColor = "#a29aac";
