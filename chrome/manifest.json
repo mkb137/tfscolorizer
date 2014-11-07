@@ -16,10 +16,8 @@
 	"permissions"		: [ "tabs", "storage" ],
 	"options_page"		: "options.html",
 	"content_scripts"	: [ {
-		"matches"	: [ "*://*/tfs/*/_boards" ],
+		"matches"	: [ "*://*/tfs/*/*board*" ],
 		"css"		: [ "style.css" ],
 		"js"		: [ "jquery-2.1.0.min.js", "util.js", "storage.js", "script.js" ]
 	} ]
-
-
 }
