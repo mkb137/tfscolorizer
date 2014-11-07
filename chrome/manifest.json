@@ -3,7 +3,7 @@
 	"name"				: "TFS Colorizer",
 	"short_name"        :  "TFS Colorizer",
 	"description"		: "This allows you to customize the colors of items on a TFS board depending on their content.",
-	"version"			: "1.3",
+	"version"			: "1.4",
 	"author"            :  "Entropa Software Ltd.",
 	"homepage_url"      :  "http://www.dogschasingsquirrels.com",
 	"icons"				: {
@@ -16,7 +16,7 @@
 	"permissions"		: [ "tabs", "storage" ],
 	"options_page"		: "options.html",
 	"content_scripts"	: [ {
-		"matches"	: [ "*://*/tfs/*/_boards" ],
+		"matches"	: [ "*://*/tfs/*/*board*" ],
 		"css"		: [ "style.css" ],
 		"js"		: [ "jquery-2.1.0.min.js", "storage.js", "script.js" ]
 	} ]
