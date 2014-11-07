@@ -1,9 +1,9 @@
 function Util () {}
 
-Util.perceivedBrightness = function (rgb) {
-	var r = rgb >> 16;
-	var g = (rgb >> 8) % 256;
-	var b = rgb % 256;
+Util.perceivedBrightness = function (hex) {
+	var r = parseInt(hex.substr(1, 2), 16);
+	var g = parseInt(hex.substr(3, 2), 16);
+	var b = parseInt(hex.substr(5, 2), 16);
 
 	return Math.floor(Math.sqrt(
 				r * r * .299 +
