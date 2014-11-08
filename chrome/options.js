@@ -66,8 +66,8 @@
 		},
 		createRow: function( $tbody, setting ) {
 			// Default new row color
-			var backColor = "#e7dcf5";
-			var borderColor = "#a29aac";
+			var backColor = TfsDefaults.defaultSettings[0].backColor;
+			var borderColor = TfsDefaults.defaultSettings[0].borderColor;
 
 			if (setting) {
 				backColor = setting.backColor;
