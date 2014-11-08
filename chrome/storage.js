@@ -12,7 +12,7 @@
 			// We have one object for each color
 			{ 
 				backColor: "#dcf5ea",
-				borderColor: 0x9aaca4,
+				borderColor: "#9aaca4",
 				patterns : [
 					{ patternType : "regex", patternText : "DEV" },
 					{ patternType : "regex", patternText : "[Ff]ix [Bb]ug" }
