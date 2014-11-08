@@ -12,6 +12,12 @@
 	});
 
 	TfsOptions = {		
+		/**
+		 * Gets the border color (as a hex value) given the background color (as a hex value).
+		 */
+		getBorderColor : function ( backgroundColor ) {
+			return Util.adjustHSV( backgroundColor, 1.0, 3.0, 0.9 );
+		},
 		/** 
 		 * Gets the settings object from the UI
 		 */
@@ -30,7 +36,7 @@
 						.css('backgroundColor');
 
 					var hexString = Util.parseRgbColor(backColor);
-					var borderColor = Util.colorLuminance(hexString, -0.3);
+					var borderColor = TfsOptions.getBorderColor( hexString );
 					
 					// Create a setting object
 					var setting = { "backColor": hexString, "borderColor": borderColor, "patterns" : patterns };
@@ -90,14 +96,14 @@
 						return false;
 					},
 					onChange: function (hsb, hex, rgb) {
-						$(this.data('colorpicker').el).css({ 'backgroundColor': '#' + hex, 'borderLeftColor': Util.colorLuminance(hex, -0.3) });
+						$(this.data('colorpicker').el).css({ 'backgroundColor': '#' + hex, 'borderLeftColor': TfsOptions.getBorderColor( '#' + hex ) });
 					},
 					onBeforeShow: function () {
 						var bg = Util.parseRgbColor( this.style.backgroundColor );
 						$(this).ColorPickerSetColor( bg );
 					}
 				})
-				.appendTo( $colorCell )
+				.appendTo( $colorCell );
 
 			// Add a cell containing a table of options
 			var $patternsCell = $( "<td>" )

@@ -11,25 +11,7 @@ Util.perceivedBrightness = function (hex) {
 				b * b * .114));
 }
 
-Util.colorLuminance = function (hex, lum) {
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-	}
-	lum = lum || 0;
-
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-		c = parseInt(hex.substr(i*2,2), 16);
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
-	}
-
-	return rgb;
-}
-
+// Converts an rgb color (e.g. "rgb( 1, 2, 3 )" to a hex value
 Util.parseRgbColor = function (rgb) {
 	var parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
 
@@ -41,3 +23,33 @@ Util.parseRgbColor = function (rgb) {
 
 	return "#" + parts.join('').toLowerCase();
 }
+		
+// Converts a hex (e.g. #RRGGBB) color to an object with r, g, and b components.
+Util.hexToRgb = function( hex ) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? {
+		r: parseInt(result[1], 16),
+		g: parseInt(result[2], 16),
+		b: parseInt(result[3], 16)
+	} : null;
+}
+
+// Adjusts the given hex color by the given H, S, and V multipliers and returns the resulting hex value.
+// Note: this depends on Colour.js
+Util.adjustHSV = function( hex, hFactor, sFactor, vFactor ) {
+	// Get the R,G,B values
+	var rgbValues = Util.hexToRgb( hex );
+	// Get an RGB object
+	var rgb = new RGBColour( rgbValues.r, rgbValues.g, rgbValues.b );
+	// Get the HSV values
+	var hsvValues = rgb.getHSV();
+	// Scale the HSV values
+	hsvValues.h = Math.min( 359.0, hsvValues.h * hFactor );
+	hsvValues.s = Math.min( 100.0, hsvValues.s * sFactor );
+	hsvValues.v = Math.min( 100.0, hsvValues.v * vFactor );
+	// Get and HSV object
+	var hsv = new HSVColour( hsvValues.h, hsvValues.s, hsvValues.v );
+	var out = hsv.getCSSHexadecimalRGB();
+	return out;
+}
+

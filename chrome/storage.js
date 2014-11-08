@@ -12,22 +12,22 @@
 			// We have one object for each color
 			{ 
 				backColor: "#dcf5ea",
-				borderColor: "#9aaca4",
+				borderColor: "#99DCBF",
 				patterns : [
-					{ patternType : "regex", patternText : "DEV" },
+					{ patternType : "startswith", patternText : "Development" },
 					{ patternType : "regex", patternText : "[Ff]ix [Bb]ug" }
 				]
 			},
 			{ 
 				backColor: "#f5f4dc",
-				borderColor: "#acab9a",
+				borderColor: "#DCDA99",
 				patterns : [
 					{ patternType : "startswith", patternText : "Documentation" }
 				]
 			},
 			{ 
 				backColor: "#f5e8dc",
-				borderColor: "#aca29a",
+				borderColor: "#DCB999",
 				patterns : [
 					{ patternType : "startswith", patternText : "Test" },
 					{ patternType : "startswith", patternText : "Confirm" }
@@ -35,21 +35,21 @@
 			},
 			{ 
 				backColor: "#f5dcdc",
-				borderColor: "#ac9a9a",
+				borderColor: "#DC9999",
 				patterns : [
 					{ patternType : "contains", patternText : "Blocked" }
 				]
 			},
 			{ 
 				backColor: "#f4dcee",
-				borderColor: "#ab9aa7",
+				borderColor: "#DC9BCB",
 				patterns : [
 					{ patternType : "contains", patternText : "Analysis" }
 				]
 			},
 			{ 
 				backColor: "#e7dcf5",
-				borderColor: "#a29aac",
+				borderColor: "#B799DC",
 				patterns : []
 			}				
 		]

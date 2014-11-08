@@ -13,7 +13,7 @@
 		 * Applies the given pattern to the board.
 		 */
 		applyPattern : function( $card, backColor, borderColor, foreColor, patternType, patternText ) {
-			//console.log( "TfsColorizer.applyPattern - type = '" + patternType + "', text = '" + patternText + "', background = " + colors.background + ", border = " + colors.border );
+			//console.log( "TfsColorizer.applyPattern - type = '" + patternType + "', text = '" + patternText + "', background = " + backColor + ", border = " + borderColor );
 			try {
 				//console.log( " - card text = '" + $card.text() + "'" );
 				var text = $card.text();
@@ -176,13 +176,13 @@
 		 * Called when a card is focused upon.
 		 */
 		onCardFocused : function() {
-			console.log( "TfsColorizer.onCardFocused" );
+			//console.log( "TfsColorizer.onCardFocused" );
 			try {
 				// Pull the user's name
 				var userName = $( "li[command = 'user']" ).text();
 				var $this = $( this );
 				var $card = $this.find( " > div.tbTileContent" ).not( ".tile-dimmed" ).find( " > div.witTitle" );
-				console.log( " - got " + $card.length + " card" );
+				//console.log( " - got " + $card.length + " card" );
 				TfsColorizer.applySettingsToCard( $card, TfsColorizer.settings, userName );
 			} catch( e ) {
 				//console.log( "Error: " + e );
